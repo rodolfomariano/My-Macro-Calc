@@ -1,0 +1,52 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+
+  .mealHeader {
+    max-width: 120px;
+    font-size: 0.625rem;
+    padding: 0.5rem;
+    color: var(--gray-700);
+    background-color: var(--yellow-50);
+    font-weight: 400;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .mealContent {
+    min-width: 160px;
+    background-color: var(--yellow-50);
+    padding: 0.5rem;
+    border-radius: 0 8px 8px 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+
+    .mealPercentage {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      input {
+        border: none;
+        background-color: var(--gray-200);
+        padding: 0.25rem 1.5rem 0.25rem 0.25rem;
+        width: 80px;
+        border-radius: 4px;
+      }
+
+      label {
+        position: absolute;
+        right: 10px;
+      }
+    }
+
+    strong {
+      color: var(--primary);
+      font-weight: 400;
+    }
+
+  }
+}

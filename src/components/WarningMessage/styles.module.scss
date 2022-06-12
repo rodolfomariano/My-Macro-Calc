@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  flex-direction: row;
+
+  font-size: 0.75rem;
+  color: var(--red-600);
+  font-weight: normal;
+
+  svg {
+    flex: none;
+  }
+
+  p {
+    margin-left: 0.25rem;
+    line-height: 1.125rem;
+  }
+
+}
+
+.start {
+  justify-content: start;
+}
+
+.center {
+  justify-content: center;
+}
+
+.end {
+  justify-content: end;
+}
+
+.IconPositionStart {
+  align-items: start;
+}
+
+.IconPositionCenter {
+  align-items: center;
+}
+
+.IconPositionEnd {
+  align-items: end;
+}
