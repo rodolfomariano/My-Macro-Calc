@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "title": "Aeróbica",
+    "type": "aerobics",
+    "met": 6.50
+  },
+  {
+    "id": 2,
+    "title": "Aeróbica de baixo impacto",
+    "type": "aerobics-low",
+    "met": 5
+  },
+  {
+    "id": 3,
+    "title": "Aeróbica de alto impacto",
+    "type": "aerobics-hard",
+    "met": 7
+  },
+  {
+    "id": 4,
+    "title": "Boxe (treino no saco)",
+    "type": "boxing-training",
+    "met": 6
+  },
+  {
+    "id": 5,
+    "title": "Boxe (sparring)",
+    "type": "boxing-sparring",
+    "met": 9
+  },
+  {
+    "id": 6,
+    "title": "Boxe (luta)",
+    "type": "boxing-match",
+    "met": 12
+  },
+  {
+    "id": 7,
+    "title": "Caminhada (marcha)",
+    "type": "walk-march",
+    "met": 6.50
+  },
+  {
+    "id": 8,
+    "title": "Caminhada (leve - 4,8km/h)",
+    "type": "walk-light",
+    "met": 3.30
+  },
+  {
+    "id": 9,
+    "title": "Caminhada (média - 5,63km/h)",
+    "type": "walk-moderate",
+    "met": 3.80
+  },
+  {
+    "id": 10,
+    "title": "Caminhada (média/forte - 6,5km/h)",
+    "type": "walk-moderate-strong",
+    "met": 5
+  },
+  {
+    "id": 11,
+    "title": "Caminhada (forte - 7,24km/h)",
+    "type": "walk-strong",
+    "met": 6.30
+  },
+  {
+    "id": 12,
+    "title": "Caminhada (8km/h)",
+    "type": "walk-very-strong",
+    "met": 8
+  },
+  {
+    "id": 13,
+    "title": "Ciclismo (<16,0km/h)",
+    "type": "cycling1",
+    "met": 4
+  },
+  {
+    "id": 14,
+    "title": "Ciclismo (16 a 19km/h)",
+    "type": "cycling2",
+    "met": 6
+  },
+  {
+    "id": 15,
+    "title": "Ciclismo (19 a 22km/h)",
+    "type": "cycling3",
+    "met": 8
+  },
+  {
+    "id": 16,
+    "title": "Ciclismo (22 a 25km/h)",
+    "type": "cycling4",
+    "met": 10
+  },
+  {
+    "id": 17,
+    "title": "Ciclismo (25 a 30km/h)",
+    "type": "cycling5",
+    "met": 12
+  },
+  {
+    "id": 18,
+    "title": "Corrida (10,7km/h)",
+    "type": "running1",
+    "met": 11
+  },
+  {
+    "id": 19,
+    "title": "Corrida (11,2km/h)",
+    "type": "running2",
+    "met": 11.5
+  },
+  {
+    "id": 20,
+    "title": "Corrida (12km/h)",
+    "type": "running3",
+    "met": 12.5
+  },
+  {
+    "id": 21,
+    "title": "Corrida (13,8km/h)",
+    "type": "running4",
+    "met": 14
+  },
+  {
+    "id": 22,
+    "title": "Futebol (eventual)",
+    "type": "soccer",
+    "met": 7
+  },
+  {
+    "id": 23,
+    "title": "Hidroginástica",
+    "type": "water-aerobics",
+    "met": 4
+  },
+  {
+    "id": 24,
+    "title": "Jiu-Jitsu",
+    "type": "jiu-jitsu",
+    "met": 10
+  },
+  {
+    "id": 25,
+    "title": "Judô",
+    "type": "judo",
+    "met": 10
+  },
+  {
+    "id": 26,
+    "title": "Kick-boxing",
+    "type": "kick-boxing",
+    "met": 10
+  },
+  {
+    "id": 27,
+    "title": "Muay Thai",
+    "type": "muay-thai",
+    "met": 10
+  },
+  {
+    "id": 28,
+    "title": "Musculação (média)",
+    "type": "moderate-bodybuilding",
+    "met": 4.5
+  },
+  {
+    "id": 29,
+    "title": "Musculação (pesada)",
+    "type": "heavy-bodybuilding",
+    "met": 6
+  },
+  {
+    "id": 30,
+    "title": "Natação (livre/leve)",
+    "type": "light-swimming",
+    "met": 7
+  },
+  {
+    "id": 31,
+    "title": "Natação (livre/médio)",
+    "type": "moderate-swimming",
+    "met": 8.5
+  },
+  {
+    "id": 32,
+    "title": "Natação (livre/forte)",
+    "type": "strong-swimming",
+    "met": 10
+  },
+  {
+    "id": 33,
+    "title": "Natação (45 m/min)",
+    "type": "swimming1",
+    "met": 8
+  },
+  {
+    "id": 34,
+    "title": "Natação (68 m/min)",
+    "type": "swimming2",
+    "met": 11
+  },
+  {
+    "id": 35,
+    "title": "Pular Corda (lento)",
+    "type": "jump-rope-slow",
+    "met": 8
+  },
+  {
+    "id": 36,
+    "title": "Pular Corda (moderado)",
+    "type": "jump-rope-moderate",
+    "met": 10
+  },
+  {
+    "id": 37,
+    "title": "Pular Corda (rápido)",
+    "type": "jump-rope-fast",
+    "met": 12
+  },
+  {
+    "id": 38,
+    "title": "Tae Kwon do",
+    "type": "tae-kwon-do",
+    "met": 10
+  },
+  {
+    "id": 39,
+    "title": "Tai Chi Chuan",
+    "type": "tai-chi-chuan",
+    "met": 4
+  },
+  {
+    "id": 40,
+    "title": "Vôlei",
+    "type": "volei",
+    "met": 3
+  }
+]
