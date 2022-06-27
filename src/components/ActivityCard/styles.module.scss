@@ -1,0 +1,57 @@
+.container {
+  flex: none;
+  position: relative;
+  width: 120px;
+  background-color: var(--green-50);
+  border-radius: 16px;
+  padding: 6px;
+  scroll-snap-align: start;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  button {
+    position: absolute;
+    padding: 4px;
+    border-radius: 50%;
+    line-height: 0;
+    color: var(--gray-50);
+    z-index: 200;
+    transition: 300ms;
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+
+  .activityTitle {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+  }
+
+  .activityTime {
+    font-size: 0.75rem;
+    color: var(--gray-250);
+  }
+
+  .activityKcal {
+    color: var(--green-400);
+    font-size: 1rem;
+  }
+
+  .removeActivity {
+    top: -6px;
+    right: -6px;
+    background-color: var(--red-100);
+  }
+
+  .editActivity {
+    top: 22px;
+    right: -6px;
+    background-color: var(--purple-200);
+  }
+}

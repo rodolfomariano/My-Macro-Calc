@@ -64,6 +64,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  scrollbar-color: var(--green-400) var(--green-200);
 }
 
 body {
@@ -72,7 +74,21 @@ body {
   -webkit-font-smoothing: antialiased;
   font-family: 'Roboto', sans-serif;
 
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--green-200);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--green-400);
+    border-radius: 3px;
+
+  }
 }
+
 
 body,
 input,

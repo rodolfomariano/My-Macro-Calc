@@ -1,6 +1,7 @@
-import { ChangeEvent, ChangeEventHandler, useState } from "react"
+import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react"
 import { motion } from "framer-motion"
-import { PlusCircle, X } from 'phosphor-react'
+import { CaretLeft, CaretRight, PlusCircle, X } from 'phosphor-react'
+import { toast } from 'react-toastify';
 
 import styles from './App.module.scss'
 import './global.scss'
@@ -10,6 +11,7 @@ import activityList from './utils/activityList.json'
 import { Header } from './components/Header'
 import { WarningMessage } from './components/WarningMessage'
 import { MealCard } from './components/MealCard'
+import { ActivityCard } from "./components/ActivityCard";
 
 interface Activity {
   id: number
@@ -34,16 +36,26 @@ function App() {
 
   const kcalResultToActivity = activitySelected.length > 0 && (Number(activitySelected.split(',')[0]) * weight * timeOfActivity) / 60
 
-  console.log(kcalResultToActivity)
+  const errorGenderNotFilled = () => toast.error("Selecione um gênero!");
+  const errorBioTypeNotFilled = () => toast.error("Selecione um biotipo!");
 
-  console.log(myActivities)
+  const errorWeightNotFilled = () => toast.error("Campo peso não está preenchido!");
+  const errorStatureNotFilled = () => toast.error("Campo altura não está preenchido!");
+  const errorAgeNotFilled = () => toast.error("Campo idade não está preenchido!");
 
   function handleAddActivity(activity: Activity) {
     setMyActivities([...myActivities, activity])
+    toast.success("Atividade adicionada com sucesso!")
     closeModalActivities()
   }
 
+  console.log(myActivities)
+
   function openModalActivities() {
+    if (weight === 0) {
+      return errorWeightNotFilled()
+    }
+
     setIsOpenModalActivities(!isOpenModalActivities)
   }
 
@@ -56,6 +68,10 @@ function App() {
       setIsOpenModalActivities(!isOpenModalActivities)
       setClosingModal(false)
     }, 900)
+  }
+
+  function handleSeePreviousActivity() {
+
   }
 
   return (
@@ -169,7 +185,29 @@ function App() {
               </div>
 
               <div className={styles.activitiesContainer}>
-                Você ainda não tem atividade
+                {myActivities.length > 0
+                  ? myActivities.map(active => <ActivityCard
+                    key={active.id}
+                    title={active.title}
+                    time={active.time}
+                    caloriesSpent={active.caloriesSpent}
+                  />
+                  )
+                  : "Voce ainda não tem atividade"
+                }
+
+                {/* <button
+                  className={styles.seePreviousActivity}
+                  onClick={handleSeePreviousActivity}
+                >
+                  <CaretLeft size={24} />
+                </button>
+                <button
+                  className={styles.seeNextActivity}
+                >
+                  <CaretRight size={24} />
+                </button> */}
+
               </div>
 
               <button className={styles.calculateButton}>Calcular</button>
@@ -231,31 +269,33 @@ function App() {
                 className={styles.IMCTableOfResults}
               >
                 <table>
-                  <tr>
-                    <th>Condição</th>
-                    <th>IMC</th>
-                    <th>Peso</th>
-                  </tr>
-                  <tr>
-                    <td>Magreza</td>
-                    <td>{'< 18.5'}</td>
-                    <td>{'< 55.4 Kg'}</td>
-                  </tr>
-                  <tr className={styles.normal}>
-                    <td>Normal</td>
-                    <td>{'18.5 a 24.9'}</td>
-                    <td>{'55.4 a 74.5 Kg'}</td>
-                  </tr>
-                  <tr>
-                    <td>Sobrepeso</td>
-                    <td>{'24.9 a 30'}</td>
-                    <td>{'74.5 a 89.8 Kg'}</td>
-                  </tr>
-                  <tr>
-                    <td>Obesidade</td>
-                    <td>{'> 30'}</td>
-                    <td>{'> 89.8 Kg'}</td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <th>Condição</th>
+                      <th>IMC</th>
+                      <th>Peso</th>
+                    </tr>
+                    <tr>
+                      <td>Magreza</td>
+                      <td>{'< 18.5'}</td>
+                      <td>{'< 55.4 Kg'}</td>
+                    </tr>
+                    <tr className={styles.normal}>
+                      <td>Normal</td>
+                      <td>{'18.5 a 24.9'}</td>
+                      <td>{'55.4 a 74.5 Kg'}</td>
+                    </tr>
+                    <tr>
+                      <td>Sobrepeso</td>
+                      <td>{'24.9 a 30'}</td>
+                      <td>{'74.5 a 89.8 Kg'}</td>
+                    </tr>
+                    <tr>
+                      <td>Obesidade</td>
+                      <td>{'> 30'}</td>
+                      <td>{'> 89.8 Kg'}</td>
+                    </tr>
+                  </tbody>
                 </table>
               </motion.div>
 
@@ -447,6 +487,7 @@ function App() {
                   name="" id=""
                   onChange={(event: ChangeEvent<HTMLSelectElement>) => setActivitySelected(event.target.value)}
                 >
+                  <option>Selecione uma categoria</option>
                   {activityList.map((activity => (
                     <option key={activity.id} value={[String(activity.met), activity.title]}>{activity.title}</option>
                   )))}
@@ -492,7 +533,9 @@ function App() {
               </footer>
             </motion.div>
           </div>
+
         </div>
+
 
       )}
     </>
