@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react"
+import { ChangeEvent, ChangeEventHandler, FormEvent, useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { CaretLeft, CaretRight, PlusCircle, X } from 'phosphor-react'
 import { toast } from 'react-toastify';
@@ -20,6 +20,10 @@ interface Activity {
   caloriesSpent: number
 }
 
+interface ScrollProp {
+  scrollLeft: number
+}
+
 function App() {
   const [genderOption, setGenderOption] = useState('')
   const [bioType, setBioType] = useState('')
@@ -34,7 +38,10 @@ function App() {
 
   const [myActivities, setMyActivities] = useState<Activity[]>([])
 
+  const activitiesCarousel = useRef<ScrollProp | any>(null)
+
   const kcalResultToActivity = activitySelected.length > 0 && (Number(activitySelected.split(',')[0]) * weight * timeOfActivity) / 60
+
 
   const errorGenderNotFilled = () => toast.error("Selecione um gênero!");
   const errorBioTypeNotFilled = () => toast.error("Selecione um biotipo!");
@@ -49,7 +56,11 @@ function App() {
     closeModalActivities()
   }
 
-  console.log(myActivities)
+  function handleRemoveActivity(id: number) {
+    const listWithoutActivity = myActivities.filter(activity => activity.id !== id)
+    setMyActivities(listWithoutActivity)
+  }
+
 
   function openModalActivities() {
     if (weight === 0) {
@@ -71,7 +82,11 @@ function App() {
   }
 
   function handleSeePreviousActivity() {
+    activitiesCarousel.current!.scrollLeft -= 120
+  }
 
+  function handleSeeNextActivity() {
+    activitiesCarousel.current!.scrollLeft += 120
   }
 
   return (
@@ -184,19 +199,24 @@ function App() {
                 </div>
               </div>
 
-              <div className={styles.activitiesContainer}>
-                {myActivities.length > 0
-                  ? myActivities.map(active => <ActivityCard
-                    key={active.id}
-                    title={active.title}
-                    time={active.time}
-                    caloriesSpent={active.caloriesSpent}
-                  />
-                  )
-                  : "Voce ainda não tem atividade"
-                }
+              <div className={styles.activitiesContainer} >
+                <div className={styles.activitiesContent} ref={activitiesCarousel}>
 
-                {/* <button
+                  {myActivities.length > 0
+                    ? myActivities.map(active => <ActivityCard
+                      key={active.id}
+                      id={active.id}
+                      title={active.title}
+                      time={active.time}
+                      caloriesSpent={active.caloriesSpent}
+                      removeItem={() => handleRemoveActivity(active.id)}
+                    />
+                    )
+                    : "Voce ainda não tem atividade"
+                  }
+                </div>
+
+                <button
                   className={styles.seePreviousActivity}
                   onClick={handleSeePreviousActivity}
                 >
@@ -204,9 +224,10 @@ function App() {
                 </button>
                 <button
                   className={styles.seeNextActivity}
+                  onClick={handleSeeNextActivity}
                 >
                   <CaretRight size={24} />
-                </button> */}
+                </button>
 
               </div>
 
