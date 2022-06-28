@@ -11,7 +11,7 @@ interface ActivityCardProps {
 
 export function ActivityCard({ title, time, caloriesSpent, id, removeItem }: ActivityCardProps) {
 
-  const caloriesSpentFormatted = caloriesSpent.toFixed(2).replace('.', ',')
+  const caloriesSpentFormatted = caloriesSpent.toLocaleString('pt-BR')
 
   const titleFormatted = title.substring(0, 10) + '...'
   const titleIsBig = title.length > 10

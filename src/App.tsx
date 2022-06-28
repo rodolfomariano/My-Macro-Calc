@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState, useRef } from "react"
+import { ChangeEvent, ChangeEventHandler, FormEvent, useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { CaretLeft, CaretRight, PlusCircle, X } from 'phosphor-react'
 import { toast } from 'react-toastify';
@@ -36,7 +36,15 @@ function App() {
   const [activitySelected, setActivitySelected] = useState<[] | any>([])
   const [timeOfActivity, setTimeOfActivity] = useState(0)
 
+  const [errorType, setErrorType] = useState('')
+
+  const [imc, setImc] = useState(0)
+  const [bodyFat, setBodyFat] = useState('')
+  const [geb, setGeb] = useState(0)
+
   const [myActivities, setMyActivities] = useState<Activity[]>([])
+
+  const [hasCalculated, setHasCalculated] = useState(false)
 
   const activitiesCarousel = useRef<ScrollProp | any>(null)
 
@@ -50,6 +58,61 @@ function App() {
   const errorStatureNotFilled = () => toast.error("Campo altura não está preenchido!");
   const errorAgeNotFilled = () => toast.error("Campo idade não está preenchido!");
 
+  const totalKcal = myActivities.reduce((totalCaloriesSpent, actualCaloriesSpent) => totalCaloriesSpent + actualCaloriesSpent.caloriesSpent, 0)
+
+  async function handleCalcTheIMCAndMacro() {
+    if (!genderOption) {
+      setErrorType('gender')
+      return errorGenderNotFilled()
+    }
+    if (!bioType) {
+      setErrorType('bioType')
+      return errorBioTypeNotFilled()
+    }
+    if (!weight) {
+      setErrorType('weight')
+      return errorWeightNotFilled()
+    }
+    if (!stature) {
+      setErrorType('stature')
+      return errorStatureNotFilled()
+    }
+    if (!age) {
+      setErrorType('age')
+      return errorAgeNotFilled()
+    }
+
+    calcIMC()
+    calcGEB()
+
+    setHasCalculated(true)
+
+  }
+
+
+  function calcIMC() {
+    const calcImc = weight / (stature * stature)
+    const imcFormatted = (calcImc * 10000)
+
+    return setImc(imcFormatted)
+  }
+
+  function calcBodyFat() {
+    const calcBodyFatAndFormat = ((1.2 * imc) + (0.23 * age) - (10.8 * (genderOption === 'masculine' ? 1 : 0)) - 5.4).toFixed(2)
+
+    return setBodyFat(calcBodyFatAndFormat)
+  }
+
+  function calcGEB() {
+    if (genderOption === 'masculine') {
+      const getGeb = 66.47 + (13.75 * weight) + (5 * stature) - (6.76 * age)
+      return setGeb(getGeb)
+    } else {
+      const getGeb = 655.1 + (9.56 * weight) + (1.85 * stature) - (4.68 * age)
+      return setGeb(getGeb)
+    }
+  }
+
   function handleAddActivity(activity: Activity) {
     setMyActivities([...myActivities, activity])
     toast.success("Atividade adicionada com sucesso!")
@@ -60,7 +123,6 @@ function App() {
     const listWithoutActivity = myActivities.filter(activity => activity.id !== id)
     setMyActivities(listWithoutActivity)
   }
-
 
   function openModalActivities() {
     if (weight === 0) {
@@ -89,6 +151,10 @@ function App() {
     activitiesCarousel.current!.scrollLeft += 120
   }
 
+  useEffect(() => {
+    calcBodyFat()
+  }, [imc])
+
   return (
     <>
       <Header />
@@ -100,7 +166,7 @@ function App() {
 
             <div className={styles.personalInfoContent}>
               <div className={styles.genderAndBioType}>
-                <div className={styles.gender}>
+                <div className={`${styles.gender} ${errorType === 'gender' && genderOption.length === 0 && styles.warning}`}>
                   <strong>Gênero:</strong>
                   <div className={styles.genderOptions}>
                     <button
@@ -119,7 +185,7 @@ function App() {
                   </div>
                 </div>
 
-                <div className={styles.bioType}>
+                <div className={`${styles.bioType} ${errorType === 'bioType' && bioType.length === 0 && styles.warning}`}>
                   <div className={styles.bioTypeHeader}>
                     <strong>Biotipo:</strong>
                     <a href="#">Qual o meu biotipo?</a>
@@ -150,7 +216,7 @@ function App() {
 
               <div className={styles.personalInfoAndActivityButton}>
                 <div className={styles.personalInfoWeightStatureAge}>
-                  <div className={styles.weight}>
+                  <div className={`${styles.weight} ${errorType === 'weight' && weight === 0 && styles.warning}`}>
                     <strong>Peso</strong>
                     <input
                       type="number"
@@ -158,11 +224,12 @@ function App() {
                       placeholder='ex: 73'
                       value={weight > 0 ? weight : ''}
                       onChange={(event: ChangeEvent<HTMLInputElement>) => setWeight(Number(event.target.value))}
+
                     />
                     <label htmlFor="weight">kg</label>
                   </div>
 
-                  <div className={styles.stature}>
+                  <div className={`${styles.stature} ${errorType === 'stature' && stature === 0 && styles.warning}`}>
                     <strong>Altura</strong>
                     <input
                       type="number"
@@ -174,7 +241,7 @@ function App() {
                     <label htmlFor="stature">cm</label>
                   </div>
 
-                  <div className={styles.age}>
+                  <div className={`${styles.age} ${errorType === 'age' && age === 0 && styles.warning} `}>
                     <strong>Idade</strong>
                     <input
                       type="number"
@@ -216,265 +283,282 @@ function App() {
                   }
                 </div>
 
-                <button
-                  className={styles.seePreviousActivity}
-                  onClick={handleSeePreviousActivity}
-                >
-                  <CaretLeft size={24} />
-                </button>
-                <button
-                  className={styles.seeNextActivity}
-                  onClick={handleSeeNextActivity}
-                >
-                  <CaretRight size={24} />
-                </button>
+                {myActivities.length >= 2 && (
+                  <>
+                    <button
+                      className={styles.seePreviousActivity}
+                      onClick={handleSeePreviousActivity}
+                    >
+                      <CaretLeft size={24} />
+                    </button>
+                    <button
+                      className={styles.seeNextActivity}
+                      onClick={handleSeeNextActivity}
+                    >
+                      <CaretRight size={24} />
+                    </button>
+
+                  </>
+                )}
 
               </div>
 
-              <button className={styles.calculateButton}>Calcular</button>
+              <button
+                className={styles.calculateButton}
+                onClick={handleCalcTheIMCAndMacro}
+              >
+                Calcular
+              </button>
             </div>
 
           </div>
 
-          <motion.div
-            // animate={{ scale: [0.5, 1] }}
-            // transition={{ duration: 0.5 }}
-            className={styles.resultsContainer}
-          >
-
-            <WarningMessage
-              iconPosition='center'
-              position='center'
-              message='Nota: Os resultados aqui apresentados não substituem um especialista!'
-            />
-
-            <div className={styles.resultHeader}>
-              <h3>Resultado:</h3>
-              <a href="#">Saiba como foi feito os calculos!</a>
-            </div>
-
-            <div className={styles.ResultIMCContent}>
-
-              <div className={styles.IMCContainer}>
-
-                <motion.div
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 0 }}
-                  className={styles.IMCInfo}
-                >
-                  <div className={styles.IMCContent}>
-                    <span>IMC</span>
-                    <strong>24, 74</strong>
-                  </div>
-
-                  <p>Índice de Massa Corporal</p>
-                </motion.div>
-
-                <motion.div
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 0.25 }}
-                  className={styles.IMCInfo}
-                >
-                  <div className={styles.IMCContent}>
-                    <span>Gordura</span>
-                    <strong>18.62%</strong>
-                  </div>
-
-                  <p>Gordura Corporal Corporal</p>
-                </motion.div>
-              </div>
-
+          {!hasCalculated
+            ? <p>Calcular</p>
+            : (
               <motion.div
-                animate={{ scale: [0, 1], opacity: [0, 1] }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className={styles.IMCTableOfResults}
+                // animate={{ scale: [0.5, 1] }}
+                // transition={{ duration: 0.5 }}
+                className={styles.resultsContainer}
               >
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Condição</th>
-                      <th>IMC</th>
-                      <th>Peso</th>
-                    </tr>
-                    <tr>
-                      <td>Magreza</td>
-                      <td>{'< 18.5'}</td>
-                      <td>{'< 55.4 Kg'}</td>
-                    </tr>
-                    <tr className={styles.normal}>
-                      <td>Normal</td>
-                      <td>{'18.5 a 24.9'}</td>
-                      <td>{'55.4 a 74.5 Kg'}</td>
-                    </tr>
-                    <tr>
-                      <td>Sobrepeso</td>
-                      <td>{'24.9 a 30'}</td>
-                      <td>{'74.5 a 89.8 Kg'}</td>
-                    </tr>
-                    <tr>
-                      <td>Obesidade</td>
-                      <td>{'> 30'}</td>
-                      <td>{'> 89.8 Kg'}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </motion.div>
 
-              <motion.div
-                animate={{ scale: [0, 1], opacity: [0, 1] }}
-                transition={{ duration: 0.5, delay: 0.75 }}
-                className={styles.warningMessageContainer}
-              >
                 <WarningMessage
-                  iconPosition='start'
+                  iconPosition='center'
                   position='center'
-                  message='Nota: Os resultados aqui apresentados podem não indicar a sua realidade, uma vez que a tabela é baseada em individuos “normais”. Por exemplo: se você for um fisioculturista, irá dar IMC auto, mas isso não quer dizer que está obeso. Procure um especialista para ter resultados mais realistas.'
+                  message='Nota: Os resultados aqui apresentados não substituem um especialista!'
                 />
-              </motion.div>
-            </div>
 
-            <div className={styles.ResultGEBContainer}>
-
-              <div className={styles.GEBContainer}>
-
-                <motion.div
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 1 }}
-                  className={styles.GEBInfo}
-                >
-                  <div className={styles.GEBContent}>
-                    <span>GEB</span>
-                    <strong>2.600kcal</strong>
-                  </div>
-
-                  <p>Gasto Energético Basal</p>
-                </motion.div>
-
-                <motion.div
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 1.25 }}
-                  className={styles.GEBInfo}
-                >
-                  <div className={styles.GEBContent}>
-                    <span>Exercícios</span>
-                    <strong>700kcal</strong>
-                  </div>
-
-                  <p>Gastos em Exercícios</p>
-                </motion.div>
-
-                <motion.span
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 1.5 }}
-
-                >
-                  =
-                </motion.span>
-
-                <motion.div
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 1.75 }}
-                  className={styles.GEBInfo}
-                >
-                  <div className={styles.GEBContent}>
-                    <span>GET</span>
-                    <strong>3.300kcal</strong>
-                  </div>
-
-                  <p>Gasto Energético Total</p>
-                </motion.div>
-              </div>
-
-              <motion.div
-                animate={{ scale: [0, 1], opacity: [0, 1] }}
-                transition={{ duration: 0.5, delay: 2 }}
-                className={styles.microsPerDayToConsumeContainer}
-              >
-
-                <div className={styles.objectiveTypesContainer}>
-                  <button className={styles.objectiveTypeButton}>
-                    Perder peso
-                  </button>
-                  <button className={styles.objectiveTypeButton}>
-                    Manter peso
-                  </button>
-                  <button className={styles.objectiveTypeButton}>
-                    Ganhar massa
-                  </button>
+                <div className={styles.resultHeader}>
+                  <h3>Resultado:</h3>
+                  <a href="#">Saiba como foi feito os calculos!</a>
                 </div>
 
-                <div className={styles.microsToConsumeContainer}>
-                  <strong>Micronutrientes diários</strong>
+                <div className={styles.ResultIMCContent}>
 
-                  <div className={styles.microContainer}>
-                    <div className={styles.microTypeContainer}>
-                      <div className={styles.microContent}>
-                        <span>333g</span>
+                  <div className={styles.IMCContainer}>
+
+                    <motion.div
+                      animate={{ scale: [0, 1], opacity: [0, 1] }}
+                      transition={{ duration: 0.5, delay: 0 }}
+                      className={styles.IMCInfo}
+                    >
+                      <div className={styles.IMCContent}>
+                        <span>IMC</span>
+                        <strong>{imc.toFixed(2).replace('.', ',')}</strong>
                       </div>
 
-                      <p>Carboidratos</p>
-                    </div>
+                      <p>Índice de Massa Corporal</p>
+                    </motion.div>
 
-                    <div className={styles.microTypeContainer}>
-                      <div className={styles.microContent}>
-                        <span>148g</span>
+                    <motion.div
+                      animate={{ scale: [0, 1], opacity: [0, 1] }}
+                      transition={{ duration: 0.5, delay: 0.25 }}
+                      className={styles.IMCInfo}
+                    >
+                      <div className={styles.IMCContent}>
+                        <span>Gordura</span>
+                        <strong>{bodyFat}%</strong>
                       </div>
 
-                      <p>Proteínas</p>
-                    </div>
-
-                    <div className={styles.microTypeContainer}>
-                      <div className={styles.microContent}>
-                        <span>74g</span>
-                      </div>
-
-                      <p>Gorduras</p>
-                    </div>
+                      <p>Gordura Corporal Corporal</p>
+                    </motion.div>
                   </div>
+
+                  <motion.div
+                    animate={{ scale: [0, 1], opacity: [0, 1] }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    className={styles.IMCTableOfResults}
+                  >
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>Condição</th>
+                          <th>IMC</th>
+                          <th>Peso</th>
+                        </tr>
+                        <tr className={imc <= 18.5 ? styles.normal : ''}>
+                          <td>Magreza</td>
+                          <td>{'< 18.5'}</td>
+                          <td>{'< 55.4 Kg'}</td>
+                        </tr>
+                        <tr className={imc > 18.5 && imc <= 24.9 ? styles.normal : ''}>
+                          <td>Normal</td>
+                          <td>{'18.5 a 24.9'}</td>
+                          <td>{'55.4 a 74.5 Kg'}</td>
+                        </tr>
+                        <tr className={imc > 24.9 && imc <= 30 ? styles.normal : ''}>
+                          <td>Sobrepeso</td>
+                          <td>{'24.9 a 30'}</td>
+                          <td>{'74.5 a 89.8 Kg'}</td>
+                        </tr>
+                        <tr className={imc > 30 ? styles.normal : ''}>
+                          <td>Obesidade</td>
+                          <td>{'> 30'}</td>
+                          <td>{'> 89.8 Kg'}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </motion.div>
+
+                  <motion.div
+                    animate={{ scale: [0, 1], opacity: [0, 1] }}
+                    transition={{ duration: 0.5, delay: 0.75 }}
+                    className={styles.warningMessageContainer}
+                  >
+                    <WarningMessage
+                      iconPosition='start'
+                      position='center'
+                      message='Nota: Os resultados aqui apresentados podem não indicar a sua realidade, uma vez que a tabela é baseada em individuos “normais”. Por exemplo: se você for um fisioculturista, irá dar IMC auto, mas isso não quer dizer que está obeso. Procure um especialista para ter resultados mais realistas.'
+                    />
+                  </motion.div>
                 </div>
+
+                <div className={styles.ResultGEBContainer}>
+
+                  <div className={styles.GEBContainer}>
+
+                    <motion.div
+                      animate={{ scale: [0, 1], opacity: [0, 1] }}
+                      transition={{ duration: 0.5, delay: 1 }}
+                      className={styles.GEBInfo}
+                    >
+                      <div className={styles.GEBContent}>
+                        <span>GEB</span>
+                        <strong>{geb.toLocaleString('pt-BR')}kcal</strong>
+                      </div>
+
+                      <p>Gasto Energético Basal</p>
+                    </motion.div>
+
+                    <motion.div
+                      animate={{ scale: [0, 1], opacity: [0, 1] }}
+                      transition={{ duration: 0.5, delay: 1.25 }}
+                      className={styles.GEBInfo}
+                    >
+                      <div className={styles.GEBContent}>
+                        <span>Exercícios</span>
+                        <strong>{totalKcal.toLocaleString('pt-BR')}kcal</strong>
+                      </div>
+
+                      <p>Gastos em Exercícios</p>
+                    </motion.div>
+
+                    <motion.span
+                      animate={{ scale: [0, 1], opacity: [0, 1] }}
+                      transition={{ duration: 0.5, delay: 1.5 }}
+
+                    >
+                      =
+                    </motion.span>
+
+                    <motion.div
+                      animate={{ scale: [0, 1], opacity: [0, 1] }}
+                      transition={{ duration: 0.5, delay: 1.75 }}
+                      className={styles.GEBInfo}
+                    >
+                      <div className={styles.GEBContent}>
+                        <span>GET</span>
+                        <strong>{(geb + totalKcal).toLocaleString('pt-BR')}kcal</strong>
+                      </div>
+
+                      <p>Gasto Energético Total</p>
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    animate={{ scale: [0, 1], opacity: [0, 1] }}
+                    transition={{ duration: 0.5, delay: 2 }}
+                    className={styles.microsPerDayToConsumeContainer}
+                  >
+
+                    <div className={styles.objectiveTypesContainer}>
+                      <button className={styles.objectiveTypeButton}>
+                        Perder peso
+                      </button>
+                      <button className={styles.objectiveTypeButton}>
+                        Manter peso
+                      </button>
+                      <button className={styles.objectiveTypeButton}>
+                        Ganhar massa
+                      </button>
+                    </div>
+
+                    <div className={styles.microsToConsumeContainer}>
+                      <strong>Micronutrientes diários</strong>
+
+                      <div className={styles.microContainer}>
+                        <div className={styles.microTypeContainer}>
+                          <div className={styles.microContent}>
+                            <span>333g</span>
+                          </div>
+
+                          <p>Carboidratos</p>
+                        </div>
+
+                        <div className={styles.microTypeContainer}>
+                          <div className={styles.microContent}>
+                            <span>148g</span>
+                          </div>
+
+                          <p>Proteínas</p>
+                        </div>
+
+                        <div className={styles.microTypeContainer}>
+                          <div className={styles.microContent}>
+                            <span>74g</span>
+                          </div>
+
+                          <p>Gorduras</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    animate={{ scale: [0, 1], opacity: [0, 1] }}
+                    transition={{ duration: 0.5, delay: 2.25 }}
+                    className={styles.warningMessageContainer}
+                  >
+                    <WarningMessage
+                      iconPosition='start'
+                      position='center'
+                      message='Nota: Gastos energéticos durante taréfas cotidianas, como: lavar louça, limpar a casa, etc, não estão inclusos no calculo!'
+                    />
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  animate={{ scale: [0, 1], opacity: [0, 1] }}
+                  transition={{ duration: 0.5, delay: 2.5 }}
+                  className={styles.kcalSuggestionPerMeal}
+                >
+                  <div className={styles.suggestionHeader}>
+                    <span>
+                      Divisão das calorias por refeição. Distribuir: <strong>{(geb + totalKcal).toLocaleString('pt-BR')}</strong>
+                    </span>
+
+                    <a href="#">Dica</a>
+                  </div>
+
+                  <div className={styles.mealContainer}>
+                    <MealCard />
+                    <MealCard />
+                    <MealCard />
+                    <MealCard />
+                    <MealCard />
+                    <MealCard />
+                    <MealCard />
+
+                    <span>
+                      <strong>100%</strong> das calorias distribuidas
+                    </span>
+                  </div>
+                </motion.div>
               </motion.div>
+            )
+          }
 
-              <motion.div
-                animate={{ scale: [0, 1], opacity: [0, 1] }}
-                transition={{ duration: 0.5, delay: 2.25 }}
-                className={styles.warningMessageContainer}
-              >
-                <WarningMessage
-                  iconPosition='start'
-                  position='center'
-                  message='Nota: Gastos energéticos durante taréfas cotidianas, como: lavar louça, limpar a casa, etc, não estão inclusos no calculo!'
-                />
-              </motion.div>
-            </div>
 
-            <motion.div
-              animate={{ scale: [0, 1], opacity: [0, 1] }}
-              transition={{ duration: 0.5, delay: 2.5 }}
-              className={styles.kcalSuggestionPerMeal}
-            >
-              <div className={styles.suggestionHeader}>
-                <strong>
-                  Divisão das calorias por refeição
-                </strong>
-
-                <a href="#">Dica</a>
-              </div>
-
-              <div className={styles.mealContainer}>
-                <MealCard />
-                <MealCard />
-                <MealCard />
-                <MealCard />
-                <MealCard />
-                <MealCard />
-                <MealCard />
-
-                <span>
-                  <strong>100%</strong> das calorias distribuidas
-                </span>
-              </div>
-            </motion.div>
-          </motion.div>
 
         </div>
       </main>
@@ -530,7 +614,7 @@ function App() {
               </div>
 
               <div className={styles.caloriesSpent}>
-                <strong>{kcalResultToActivity ? (kcalResultToActivity).toFixed(2).replace('.', ',') : 0}kcal</strong><span> gastas</span>
+                <strong>{kcalResultToActivity ? (kcalResultToActivity).toLocaleString('pt-BR') : 0}kcal</strong><span> gastas</span>
               </div>
 
               <footer>

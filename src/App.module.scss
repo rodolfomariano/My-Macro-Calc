@@ -248,6 +248,11 @@
             background-color: rgba(0, 0, 0, .3);
             color: var(--gray-50);
             backdrop-filter: blur(1.5px);
+            transition: 300ms;
+
+            &:hover {
+              background-color: rgba(0, 0, 0, .5);
+            }
           }
 
           .activitiesContent {
@@ -281,11 +286,21 @@
           .seePreviousActivity {
             top: 0;
             left: 0;
+            box-shadow: 4px 0 8px rgba(0, 0, 0, .3);
+
+            &:hover {
+              box-shadow: 4px 0 8px rgba(0, 0, 0, .5);
+            }
           }
 
           .seeNextActivity {
             top: 0;
             right: 0;
+            box-shadow: -4px 0 8px rgba(0, 0, 0, .3);
+
+            &:hover {
+              box-shadow: -4px 0 8px rgba(0, 0, 0, .5);
+            }
           }
 
         }
@@ -584,7 +599,7 @@
           align-items: center;
           justify-content: space-between;
 
-          strong {
+          span {
             font-weight: 400;
           }
 
@@ -789,4 +804,8 @@
 
 
   }
+}
+
+.warning {
+  border: 1px solid var(--red-500);
 }
