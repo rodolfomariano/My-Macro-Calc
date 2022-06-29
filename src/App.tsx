@@ -42,6 +42,8 @@ function App() {
   const [bodyFat, setBodyFat] = useState('')
   const [geb, setGeb] = useState(0)
 
+  const [weightObject, setWeightObject] = useState('maintainWeight')
+
   const [myActivities, setMyActivities] = useState<Activity[]>([])
 
   const [hasCalculated, setHasCalculated] = useState(false)
@@ -58,7 +60,92 @@ function App() {
   const errorStatureNotFilled = () => toast.error("Campo altura não está preenchido!");
   const errorAgeNotFilled = () => toast.error("Campo idade não está preenchido!");
 
-  const totalKcal = myActivities.reduce((totalCaloriesSpent, actualCaloriesSpent) => totalCaloriesSpent + actualCaloriesSpent.caloriesSpent, 0)
+  const totalKcalByActivity = myActivities.reduce((totalCaloriesSpent, actualCaloriesSpent) => totalCaloriesSpent + actualCaloriesSpent.caloriesSpent, 0)
+  const totalKcal = totalKcalByActivity + geb
+
+  function calcIMC() {
+    const calcImc = weight / (stature * stature)
+    const imcFormatted = (calcImc * 10000)
+
+    return setImc(imcFormatted)
+  }
+
+  function calcBodyFat() {
+    const calcBodyFatAndFormat = ((1.2 * imc) + (0.23 * age) - (10.8 * (genderOption === 'masculine' ? 1 : 0)) - 5.4).toFixed(2)
+
+    return setBodyFat(calcBodyFatAndFormat)
+  }
+
+  function calcGEB() {
+    if (genderOption === 'masculine') {
+      const getGeb = 66.47 + (13.75 * weight) + (5 * stature) - (6.76 * age)
+      return setGeb(getGeb)
+    } else {
+      const getGeb = 655.1 + (9.56 * weight) + (1.85 * stature) - (4.68 * age)
+      return setGeb(getGeb)
+    }
+  }
+
+  // function calMacro() {
+  /*
+  proteina =    1.8 a 2 * peso
+  gordura =     0.8 a 1 * peso
+  carboidrato = respo
+
+  1g de proteina =    4kcal
+  1g de gordura =     9kcal
+  1g de carboidrato = 4kcal
+  */
+
+  const proteinToMaintainWeight = 1.8 * weight
+  const fatToMaintainWeight = 0.8 * weight
+  const carbohydrateToMaintainWeight = (totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4
+
+  const proteinToLoseWeight = 1.8 * weight
+  const fatToLoseWeight = 0.8 * weight
+  const carbohydrateToLoseWeight = ((totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4) * 0.8
+
+  const proteinToGainMass = 2 * weight
+  const fatToGainMass = 1 * weight
+  const carbohydrateToGainMass = ((totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4) * 1.2
+
+  function openModalActivities() {
+    if (weight === 0) {
+      return errorWeightNotFilled()
+    }
+
+    setIsOpenModalActivities(!isOpenModalActivities)
+  }
+
+  function handleAddActivity(activity: Activity) {
+    setMyActivities([...myActivities, activity])
+    toast.success("Atividade adicionada com sucesso!")
+    closeModalActivities()
+  }
+
+  function handleRemoveActivity(id: number) {
+    const listWithoutActivity = myActivities.filter(activity => activity.id !== id)
+    setMyActivities(listWithoutActivity)
+  }
+
+  function closeModalActivities() {
+    setClosingModal(true)
+    setActivitySelected([])
+    setTimeOfActivity(0)
+
+    setTimeout(() => {
+      setIsOpenModalActivities(!isOpenModalActivities)
+      setClosingModal(false)
+    }, 900)
+  }
+
+  function handleSeePreviousActivity() {
+    activitiesCarousel.current!.scrollLeft -= 120
+  }
+
+  function handleSeeNextActivity() {
+    activitiesCarousel.current!.scrollLeft += 120
+  }
 
   async function handleCalcTheIMCAndMacro() {
     if (!genderOption) {
@@ -89,71 +176,10 @@ function App() {
 
   }
 
-
-  function calcIMC() {
-    const calcImc = weight / (stature * stature)
-    const imcFormatted = (calcImc * 10000)
-
-    return setImc(imcFormatted)
-  }
-
-  function calcBodyFat() {
-    const calcBodyFatAndFormat = ((1.2 * imc) + (0.23 * age) - (10.8 * (genderOption === 'masculine' ? 1 : 0)) - 5.4).toFixed(2)
-
-    return setBodyFat(calcBodyFatAndFormat)
-  }
-
-  function calcGEB() {
-    if (genderOption === 'masculine') {
-      const getGeb = 66.47 + (13.75 * weight) + (5 * stature) - (6.76 * age)
-      return setGeb(getGeb)
-    } else {
-      const getGeb = 655.1 + (9.56 * weight) + (1.85 * stature) - (4.68 * age)
-      return setGeb(getGeb)
-    }
-  }
-
-  function handleAddActivity(activity: Activity) {
-    setMyActivities([...myActivities, activity])
-    toast.success("Atividade adicionada com sucesso!")
-    closeModalActivities()
-  }
-
-  function handleRemoveActivity(id: number) {
-    const listWithoutActivity = myActivities.filter(activity => activity.id !== id)
-    setMyActivities(listWithoutActivity)
-  }
-
-  function openModalActivities() {
-    if (weight === 0) {
-      return errorWeightNotFilled()
-    }
-
-    setIsOpenModalActivities(!isOpenModalActivities)
-  }
-
-  function closeModalActivities() {
-    setClosingModal(true)
-    setActivitySelected([])
-    setTimeOfActivity(0)
-
-    setTimeout(() => {
-      setIsOpenModalActivities(!isOpenModalActivities)
-      setClosingModal(false)
-    }, 900)
-  }
-
-  function handleSeePreviousActivity() {
-    activitiesCarousel.current!.scrollLeft -= 120
-  }
-
-  function handleSeeNextActivity() {
-    activitiesCarousel.current!.scrollLeft += 120
-  }
-
   useEffect(() => {
     calcBodyFat()
-  }, [imc])
+    // calMacro()
+  }, [imc, myActivities])
 
   return (
     <>
@@ -221,7 +247,7 @@ function App() {
                     <input
                       type="number"
                       id="weight"
-                      placeholder='ex: 73'
+                      placeholder='ex: 70'
                       value={weight > 0 ? weight : ''}
                       onChange={(event: ChangeEvent<HTMLInputElement>) => setWeight(Number(event.target.value))}
 
@@ -234,7 +260,7 @@ function App() {
                     <input
                       type="number"
                       id="stature"
-                      placeholder='ex: 173'
+                      placeholder='ex: 170'
                       value={stature > 0 ? stature : ''}
                       onChange={(event: ChangeEvent<HTMLInputElement>) => setStature(Number(event.target.value))}
                     />
@@ -246,7 +272,7 @@ function App() {
                     <input
                       type="number"
                       id="age"
-                      placeholder='35'
+                      placeholder='ex: 22'
                       value={age > 0 ? age : ''}
                       onChange={(event: ChangeEvent<HTMLInputElement>) => setAge(Number(event.target.value))}
                     />
@@ -437,7 +463,7 @@ function App() {
                     >
                       <div className={styles.GEBContent}>
                         <span>Exercícios</span>
-                        <strong>{totalKcal.toLocaleString('pt-BR')}kcal</strong>
+                        <strong>{totalKcalByActivity.toLocaleString('pt-BR')}kcal</strong>
                       </div>
 
                       <p>Gastos em Exercícios</p>
@@ -458,7 +484,7 @@ function App() {
                     >
                       <div className={styles.GEBContent}>
                         <span>GET</span>
-                        <strong>{(geb + totalKcal).toLocaleString('pt-BR')}kcal</strong>
+                        <strong>{(totalKcal).toLocaleString('pt-BR')}kcal</strong>
                       </div>
 
                       <p>Gasto Energético Total</p>
@@ -472,13 +498,22 @@ function App() {
                   >
 
                     <div className={styles.objectiveTypesContainer}>
-                      <button className={styles.objectiveTypeButton}>
+                      <button
+                        className={`${styles.objectiveTypeButton} ${weightObject === 'loseWeight' && styles.weightObjectSelected}`}
+                        onClick={() => setWeightObject('loseWeight')}
+                      >
                         Perder peso
                       </button>
-                      <button className={styles.objectiveTypeButton}>
+                      <button
+                        className={`${styles.objectiveTypeButton} ${weightObject === 'maintainWeight' && styles.weightObjectSelected}`}
+                        onClick={() => setWeightObject('maintainWeight')}
+                      >
                         Manter peso
                       </button>
-                      <button className={styles.objectiveTypeButton}>
+                      <button
+                        className={`${styles.objectiveTypeButton} ${weightObject === 'gainMass' && styles.weightObjectSelected}`}
+                        onClick={() => setWeightObject('gainMass')}
+                      >
                         Ganhar massa
                       </button>
                     </div>
@@ -489,7 +524,14 @@ function App() {
                       <div className={styles.microContainer}>
                         <div className={styles.microTypeContainer}>
                           <div className={styles.microContent}>
-                            <span>333g</span>
+                            <span>
+                              {weightObject === 'loseWeight'
+                                ? `${Math.round(carbohydrateToLoseWeight)}g`
+                                : weightObject === 'maintainWeight'
+                                  ? `${Math.round(carbohydrateToMaintainWeight)}g`
+                                  : `${Math.round(carbohydrateToGainMass)}g`
+                              }
+                            </span>
                           </div>
 
                           <p>Carboidratos</p>
@@ -497,7 +539,14 @@ function App() {
 
                         <div className={styles.microTypeContainer}>
                           <div className={styles.microContent}>
-                            <span>148g</span>
+                            <span>
+                              {weightObject === 'loseWeight'
+                                ? `${Math.round(proteinToLoseWeight)}g`
+                                : weightObject === 'maintainWeight'
+                                  ? `${Math.round(proteinToMaintainWeight)}g`
+                                  : `${Math.round(proteinToGainMass)}g`
+                              }
+                            </span>
                           </div>
 
                           <p>Proteínas</p>
@@ -505,7 +554,14 @@ function App() {
 
                         <div className={styles.microTypeContainer}>
                           <div className={styles.microContent}>
-                            <span>74g</span>
+                            <span>
+                              {weightObject === 'loseWeight'
+                                ? `${Math.round(fatToLoseWeight)}g`
+                                : weightObject === 'maintainWeight'
+                                  ? `${Math.round(fatToMaintainWeight)}g`
+                                  : `${Math.round(fatToGainMass)}g`
+                              }
+                            </span>
                           </div>
 
                           <p>Gorduras</p>
@@ -532,9 +588,30 @@ function App() {
                   transition={{ duration: 0.5, delay: 2.5 }}
                   className={styles.kcalSuggestionPerMeal}
                 >
+
+                  {/* console.log(`Manter peso  - proteinas: ${proteinToMaintainWeight} / gordura: ${fatToMaintainWeight} / carboidratos: ${carbohydrateToMaintainWeight}`)
+    console.log(`Perder peso  - proteinas: ${proteinToLoseWeight} / gordura: ${fatToLoseWeight} / carboidratos: ${carbohydrateToLoseWeight}`)
+    console.log(`Ganhar massa - proteinas: ${proteinToGainMass} / gordura: ${fatToGainMass} / carboidratos: ${carbohydrateToGainMass}`) */}
+
                   <div className={styles.suggestionHeader}>
                     <span>
-                      Divisão das calorias por refeição. Distribuir: <strong>{(geb + totalKcal).toLocaleString('pt-BR')}</strong>
+                      {/* Divisão das calorias por refeição. Distribuir: <strong>{(totalKcal).toLocaleString('pt-BR')} kcal</strong> */}
+                      Divisão das calorias por refeição. Distribuir:
+                      <strong>{weightObject === 'loseWeight'
+                        ? ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9) + (carbohydrateToLoseWeight * 4)).toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                        : weightObject === 'maintainWeight'
+                          ? ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9) + (carbohydrateToMaintainWeight * 4)).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                          : ((proteinToGainMass * 4) + (fatToGainMass * 9) + (carbohydrateToGainMass * 4)).toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                      } kcal</strong>
                     </span>
 
                     <a href="#">Dica</a>
