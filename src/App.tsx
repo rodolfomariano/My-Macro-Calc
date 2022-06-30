@@ -463,7 +463,10 @@ function App() {
                     >
                       <div className={styles.GEBContent}>
                         <span>Exercícios</span>
-                        <strong>{totalKcalByActivity.toLocaleString('pt-BR')}kcal</strong>
+                        <strong>{totalKcalByActivity.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}kcal</strong>
                       </div>
 
                       <p>Gastos em Exercícios</p>
@@ -484,7 +487,10 @@ function App() {
                     >
                       <div className={styles.GEBContent}>
                         <span>GET</span>
-                        <strong>{(totalKcal).toLocaleString('pt-BR')}kcal</strong>
+                        <strong>{(totalKcal).toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}kcal</strong>
                       </div>
 
                       <p>Gasto Energético Total</p>
@@ -691,7 +697,10 @@ function App() {
               </div>
 
               <div className={styles.caloriesSpent}>
-                <strong>{kcalResultToActivity ? (kcalResultToActivity).toLocaleString('pt-BR') : 0}kcal</strong><span> gastas</span>
+                <strong>{kcalResultToActivity ? (kcalResultToActivity).toLocaleString('pt-BR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }) : 0}kcal</strong><span> gastas</span>
               </div>
 
               <footer>
