@@ -603,7 +603,7 @@ function App() {
                     <span>
                       {/* Divisão das calorias por refeição. Distribuir: <strong>{(totalKcal).toLocaleString('pt-BR')} kcal</strong> */}
                       Divisão das calorias por refeição. Distribuir:
-                      <strong>{weightObject === 'loseWeight'
+                      <strong> {weightObject === 'loseWeight'
                         ? ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9) + (carbohydrateToLoseWeight * 4)).toLocaleString('pt-BR', {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
