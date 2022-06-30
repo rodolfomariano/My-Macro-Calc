@@ -799,11 +799,11 @@
     }
 
     button:nth-child(1) {
-      background-color: var(--blue-300);
+      background-color: var(--orange-500);
       border-bottom-left-radius: 16px;
 
       &:hover {
-        background-color: var(--blue-500);
+        background-color: var(--orange-600);
       }
     }
 
