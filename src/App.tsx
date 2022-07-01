@@ -12,6 +12,7 @@ import { Header } from './components/Header'
 import { WarningMessage } from './components/WarningMessage'
 import { MealCard } from './components/MealCard'
 import { ActivityCard } from "./components/ActivityCard";
+import { KcalSuggestionPerMeal } from "./components/KcalSuggestionPerMeal";
 
 interface Activity {
   id: number
@@ -108,6 +109,8 @@ function App() {
   const proteinToGainMass = 2 * weight
   const fatToGainMass = 1 * weight
   const carbohydrateToGainMass = ((totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4) * 1.2
+
+  const [totalKcalToConsume, setTotalKcalToConsume] = useState()
 
   function openModalActivities() {
     if (weight === 0) {
@@ -589,54 +592,19 @@ function App() {
                   </motion.div>
                 </div>
 
-                <motion.div
-                  animate={{ scale: [0, 1], opacity: [0, 1] }}
-                  transition={{ duration: 0.5, delay: 2.5 }}
-                  className={styles.kcalSuggestionPerMeal}
-                >
+                <KcalSuggestionPerMeal
+                  weightObject={weightObject}
+                  proteinToMaintainWeight={proteinToMaintainWeight}
+                  fatToMaintainWeight={fatToMaintainWeight}
+                  carbohydrateToMaintainWeight={carbohydrateToMaintainWeight}
+                  proteinToLoseWeight={proteinToLoseWeight}
+                  fatToLoseWeight={fatToLoseWeight}
+                  carbohydrateToLoseWeight={carbohydrateToLoseWeight}
+                  proteinToGainMass={proteinToGainMass}
+                  fatToGainMass={fatToGainMass}
+                  carbohydrateToGainMass={carbohydrateToGainMass}
+                />
 
-                  {/* console.log(`Manter peso  - proteinas: ${proteinToMaintainWeight} / gordura: ${fatToMaintainWeight} / carboidratos: ${carbohydrateToMaintainWeight}`)
-    console.log(`Perder peso  - proteinas: ${proteinToLoseWeight} / gordura: ${fatToLoseWeight} / carboidratos: ${carbohydrateToLoseWeight}`)
-    console.log(`Ganhar massa - proteinas: ${proteinToGainMass} / gordura: ${fatToGainMass} / carboidratos: ${carbohydrateToGainMass}`) */}
-
-                  <div className={styles.suggestionHeader}>
-                    <span>
-                      {/* Divisão das calorias por refeição. Distribuir: <strong>{(totalKcal).toLocaleString('pt-BR')} kcal</strong> */}
-                      Divisão das calorias por refeição. Distribuir:
-                      <strong> {weightObject === 'loseWeight'
-                        ? ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9) + (carbohydrateToLoseWeight * 4)).toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
-                        : weightObject === 'maintainWeight'
-                          ? ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9) + (carbohydrateToMaintainWeight * 4)).toLocaleString('pt-BR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                          : ((proteinToGainMass * 4) + (fatToGainMass * 9) + (carbohydrateToGainMass * 4)).toLocaleString('pt-BR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                      } kcal</strong>
-                    </span>
-
-                    <a href="#">Dica</a>
-                  </div>
-
-                  <div className={styles.mealContainer}>
-                    <MealCard />
-                    <MealCard />
-                    <MealCard />
-                    <MealCard />
-                    <MealCard />
-                    <MealCard />
-                    <MealCard />
-
-                    <span>
-                      <strong>100%</strong> das calorias distribuidas
-                    </span>
-                  </div>
-                </motion.div>
               </motion.div>
             )
           }
