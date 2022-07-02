@@ -1,0 +1,84 @@
+.ResultIMCContent {
+  display: flex;
+  justify-content: space-between;
+
+  .IMCContainer {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .IMCInfo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      p {
+        color: var(--gray-500);
+        font-size: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .IMCContent {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: var(--yellow-500);
+        color: var(--gray-500);
+
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.25rem;
+      }
+    }
+  }
+
+  .IMCTableOfResults {
+    table {
+
+
+      tr {
+        text-align: start;
+
+
+        &.normal {
+          background-color: var(--yellow-500);
+        }
+      }
+
+      th {
+        color: var(--gray-500);
+        font-weight: 400;
+        font-size: 1rem;
+        padding-bottom: 0.875rem;
+      }
+
+      td {
+        text-align: start;
+        border-bottom: 0.5px solid var(--gray-200);
+        font-size: 0.75rem;
+        color: var(--gray-300);
+        font-weight: 400;
+        padding: 0 0.5rem;
+
+        &+td {
+          padding-bottom: 0.5rem;
+          padding-top: 0.5rem;
+          padding-left: 2rem;
+        }
+      }
+    }
+
+  }
+
+  .warningMessageContainer {
+    max-width: 300px;
+  }
+
+  @media (max-width: 1080px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+}
