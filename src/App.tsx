@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState, useRef, useEffect } from "react"
+import { ChangeEvent, useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { CaretLeft, CaretRight, PlusCircle, X } from 'phosphor-react'
 import { toast } from 'react-toastify';
@@ -6,13 +6,12 @@ import { toast } from 'react-toastify';
 import styles from './App.module.scss'
 import './global.scss'
 
-import activityList from './utils/activityList.json'
-
 import { Header } from './components/Header'
 import { WarningMessage } from './components/WarningMessage'
 import { MealCard } from './components/MealCard'
 import { ActivityCard } from "./components/ActivityCard";
 import { KcalSuggestionPerMeal } from "./components/KcalSuggestionPerMeal";
+import { ModalActivities } from "./components/ModalActivities";
 
 interface Activity {
   id: number
@@ -32,10 +31,6 @@ function App() {
   const [stature, setStature] = useState(0)
   const [age, setAge] = useState(0)
   const [isOpenModalActivities, setIsOpenModalActivities] = useState(false)
-  const [closingModal, setClosingModal] = useState(false)
-
-  const [activitySelected, setActivitySelected] = useState<[] | any>([])
-  const [timeOfActivity, setTimeOfActivity] = useState(0)
 
   const [errorType, setErrorType] = useState('')
 
@@ -50,8 +45,6 @@ function App() {
   const [hasCalculated, setHasCalculated] = useState(false)
 
   const activitiesCarousel = useRef<ScrollProp | any>(null)
-
-  const kcalResultToActivity = activitySelected.length > 0 && (Number(activitySelected.split(',')[0]) * weight * timeOfActivity) / 60
 
 
   const errorGenderNotFilled = () => toast.error("Selecione um gênero!");
@@ -110,8 +103,6 @@ function App() {
   const fatToGainMass = 1 * weight
   const carbohydrateToGainMass = ((totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4) * 1.2
 
-  const [totalKcalToConsume, setTotalKcalToConsume] = useState()
-
   function openModalActivities() {
     if (weight === 0) {
       return errorWeightNotFilled()
@@ -123,23 +114,11 @@ function App() {
   function handleAddActivity(activity: Activity) {
     setMyActivities([...myActivities, activity])
     toast.success("Atividade adicionada com sucesso!")
-    closeModalActivities()
   }
 
   function handleRemoveActivity(id: number) {
     const listWithoutActivity = myActivities.filter(activity => activity.id !== id)
     setMyActivities(listWithoutActivity)
-  }
-
-  function closeModalActivities() {
-    setClosingModal(true)
-    setActivitySelected([])
-    setTimeOfActivity(0)
-
-    setTimeout(() => {
-      setIsOpenModalActivities(!isOpenModalActivities)
-      setClosingModal(false)
-    }, 900)
   }
 
   function handleSeePreviousActivity() {
@@ -294,6 +273,16 @@ function App() {
 
                 </div>
               </div>
+
+              {isOpenModalActivities && (
+                <ModalActivities
+                  handleAddActivity={handleAddActivity}
+                  myActivities={myActivities}
+                  weight={weight}
+                  setIsOpenModalActivities={setIsOpenModalActivities}
+                  isOpenModalActivities
+                />
+              )}
 
               <div className={styles.activitiesContainer} >
                 <div className={styles.activitiesContent} ref={activitiesCarousel}>
@@ -614,89 +603,7 @@ function App() {
         </div>
       </main>
 
-      {isOpenModalActivities && (
-        <div className={styles.modalActivities}>
-          <div className={styles.modalActivitiesBackground}>
-            <motion.div
-              animate={
-                closingModal
-                  ? { scale: [1, 1.2, 0], }
-                  : { scale: [0, 1.2, 1], }
-              }
-              transition={{ duration: 0.75, delay: 0 }}
-              className={styles.modalActivitiesContent}
-            >
-              <div className={styles.modalHeader}>
-                <strong>
-                  Atividades
-                </strong>
-                <button
-                  onClick={closeModalActivities}
-                >
-                  <X size={16} />
-                </button>
-              </div>
 
-              <div className={styles.activitiesOptions}>
-                <strong>Selecione uma atividade</strong>
-                <select
-                  name="" id=""
-                  onChange={(event: ChangeEvent<HTMLSelectElement>) => setActivitySelected(event.target.value)}
-                >
-                  <option>Selecione uma categoria</option>
-                  {activityList.map((activity => (
-                    <option key={activity.id} value={[String(activity.met), activity.title]}>{activity.title}</option>
-                  )))}
-
-                </select>
-
-                <div className={styles.timeTraining}>
-                  <strong>Treinou quanto tempo?</strong>
-                  <div className={styles.timeInput}>
-                    <input
-                      type="number"
-                      id='time'
-                      placeholder={timeOfActivity > 0 ? String(timeOfActivity) : 'ex: 60'}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) => setTimeOfActivity(Number(event.target.value))}
-                    />
-                    <label htmlFor="time">min</label>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.caloriesSpent}>
-                <strong>{kcalResultToActivity ? (kcalResultToActivity).toLocaleString('pt-BR', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }) : 0}kcal</strong><span> gastas</span>
-              </div>
-
-              <footer>
-                <button
-                  onClick={closeModalActivities}
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => {
-                    handleAddActivity({
-                      id: myActivities.length + 1,
-                      title: activitySelected.split(',')[1],
-                      time: timeOfActivity,
-                      caloriesSpent: kcalResultToActivity ? kcalResultToActivity : 0
-                    })
-                  }}
-                >
-                  Confirmar
-                </button>
-              </footer>
-            </motion.div>
-          </div>
-
-        </div>
-
-
-      )}
     </>
   )
 }

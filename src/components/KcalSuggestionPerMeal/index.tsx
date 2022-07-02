@@ -1,5 +1,5 @@
-import { motion } from "framer-motion"
 import { ChangeEvent, useState } from "react"
+import { motion } from "framer-motion"
 
 import { MealCard } from "../MealCard"
 
