@@ -1,14 +1,35 @@
 import { motion } from "framer-motion"
+import { useEffect } from "react"
+import { usePersonalData } from "../../hooks/usePersonalData"
 import { WarningMessage } from "../WarningMessage"
 
 import styles from './styles.module.scss'
 
 interface IMCContainerProps {
-  imc: number
-  bodyFat: string
+  // bodyFat: string
 }
 
-export function IMCContainer({ imc, bodyFat }: IMCContainerProps) {
+export function IMCContainer() {
+  const { userInfo, setImc, imc, setBodyFat, bodyFat } = usePersonalData()
+
+  function calcIMC() {
+    const calcImc = userInfo.weight / (userInfo.stature * userInfo.stature)
+    const imcFormatted = (calcImc * 10000)
+
+    return setImc(imcFormatted)
+  }
+
+  function calcBodyFat() {
+    const calcBodyFatAndFormat = ((1.2 * imc) + (0.23 * userInfo.age) - (10.8 * (userInfo.genderOption === 'masculine' ? 1 : 0)) - 5.4).toFixed(2)
+
+    return setBodyFat(calcBodyFatAndFormat)
+  }
+
+  useEffect(() => {
+    calcIMC()
+    calcBodyFat()
+  }, [imc])
+
   return (
     <div className={styles.ResultIMCContent}>
 

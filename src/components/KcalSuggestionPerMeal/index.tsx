@@ -4,31 +4,15 @@ import { motion } from "framer-motion"
 import { MealCard } from "../MealCard"
 
 import styles from './styles.module.scss'
+import { usePersonalData } from "../../hooks/usePersonalData"
 
 interface KcalSuggestionPerMealProps {
   weightObject: string
-  proteinToMaintainWeight: number
-  fatToMaintainWeight: number
-  carbohydrateToMaintainWeight: number
-  proteinToLoseWeight: number
-  fatToLoseWeight: number
-  carbohydrateToLoseWeight: number
-  proteinToGainMass: number
-  fatToGainMass: number
-  carbohydrateToGainMass: number
+
 }
 
 export function KcalSuggestionPerMeal({
   weightObject,
-  proteinToMaintainWeight,
-  fatToMaintainWeight,
-  carbohydrateToMaintainWeight,
-  proteinToLoseWeight,
-  fatToLoseWeight,
-  carbohydrateToLoseWeight,
-  proteinToGainMass,
-  fatToGainMass,
-  carbohydrateToGainMass,
 
 }: KcalSuggestionPerMealProps) {
   const [breakfast, setBreakfast] = useState(12)
@@ -40,9 +24,11 @@ export function KcalSuggestionPerMeal({
   const [preTraining, setPreTraining] = useState(0)
   const [afterTraining, setAfterTraining] = useState(14)
 
-  const weightObjectToLoseWeight = (proteinToLoseWeight * 4) + (fatToLoseWeight * 9) + (carbohydrateToLoseWeight * 4)
-  const weightObjectToMaintainWeight = (proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9) + (carbohydrateToMaintainWeight * 4)
-  const weightObjectToGainMass = (proteinToGainMass * 4) + (fatToGainMass * 9) + (carbohydrateToGainMass * 4)
+  const { macro } = usePersonalData()
+
+  const weightObjectToLoseWeight = (macro.proteinToLoseWeight * 4) + (macro.fatToLoseWeight * 9) + (macro.carbohydrateToLoseWeight * 4)
+  const weightObjectToMaintainWeight = (macro.proteinToMaintainWeight * 4) + (macro.fatToMaintainWeight * 9) + (macro.carbohydrateToMaintainWeight * 4)
+  const weightObjectToGainMass = (macro.proteinToGainMass * 4) + (macro.fatToGainMass * 9) + (macro.carbohydrateToGainMass * 4)
 
   return (
     <motion.div
@@ -55,16 +41,16 @@ export function KcalSuggestionPerMeal({
         <span>
           Calorias para distribuir:
           <strong> {weightObject === 'loseWeight'
-            ? ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9) + (carbohydrateToLoseWeight * 4)).toLocaleString('pt-BR', {
+            ? ((macro.proteinToLoseWeight * 4) + (macro.fatToLoseWeight * 9) + (macro.carbohydrateToLoseWeight * 4)).toLocaleString('pt-BR', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })
             : weightObject === 'maintainWeight'
-              ? ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9) + (carbohydrateToMaintainWeight * 4)).toLocaleString('pt-BR', {
+              ? ((macro.proteinToMaintainWeight * 4) + (macro.fatToMaintainWeight * 9) + (macro.carbohydrateToMaintainWeight * 4)).toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
-              : ((proteinToGainMass * 4) + (fatToGainMass * 9) + (carbohydrateToGainMass * 4)).toLocaleString('pt-BR', {
+              : ((macro.proteinToGainMass * 4) + (macro.fatToGainMass * 9) + (macro.carbohydrateToGainMass * 4)).toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })} kcal</strong>

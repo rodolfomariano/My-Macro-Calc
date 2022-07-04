@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useRef, useEffect } from "react"
+import { ChangeEvent, useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { CaretLeft, CaretRight, PlusCircle, X } from 'phosphor-react'
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ import { KcalSuggestionPerMeal } from "./components/KcalSuggestionPerMeal";
 import { ModalActivities } from "./components/ModalActivities";
 import { IMCContainer } from "./components/IMCContainer";
 import { GEBContainer } from "./components/GEBContainer";
+import { usePersonalData } from "./hooks/usePersonalData";
 
 interface Activity {
   id: number
@@ -36,18 +37,14 @@ function App() {
 
   const [errorType, setErrorType] = useState('')
 
-  const [imc, setImc] = useState(0)
-  const [bodyFat, setBodyFat] = useState('')
-  const [geb, setGeb] = useState(0)
-
   const [weightObject, setWeightObject] = useState('maintainWeight')
-
-  const [myActivities, setMyActivities] = useState<Activity[]>([])
 
   const [hasCalculated, setHasCalculated] = useState(false)
 
   const activitiesCarousel = useRef<ScrollProp | any>(null)
 
+  // HOOK USERINFO
+  const { setUserInfo, myActivities, setMyActivities, totalKcal } = usePersonalData()
 
   const errorGenderNotFilled = () => toast.error("Selecione um gênero!");
   const errorBioTypeNotFilled = () => toast.error("Selecione um biotipo!");
@@ -56,54 +53,7 @@ function App() {
   const errorStatureNotFilled = () => toast.error("Campo altura não está preenchido!");
   const errorAgeNotFilled = () => toast.error("Campo idade não está preenchido!");
 
-  const totalKcalByActivity = myActivities.reduce((totalCaloriesSpent, actualCaloriesSpent) => totalCaloriesSpent + actualCaloriesSpent.caloriesSpent, 0)
-  const totalKcal = totalKcalByActivity + geb
 
-  function calcIMC() {
-    const calcImc = weight / (stature * stature)
-    const imcFormatted = (calcImc * 10000)
-
-    return setImc(imcFormatted)
-  }
-
-  function calcBodyFat() {
-    const calcBodyFatAndFormat = ((1.2 * imc) + (0.23 * age) - (10.8 * (genderOption === 'masculine' ? 1 : 0)) - 5.4).toFixed(2)
-
-    return setBodyFat(calcBodyFatAndFormat)
-  }
-
-  function calcGEB() {
-    if (genderOption === 'masculine') {
-      const getGeb = 66.47 + (13.75 * weight) + (5 * stature) - (6.76 * age)
-      return setGeb(getGeb)
-    } else {
-      const getGeb = 655.1 + (9.56 * weight) + (1.85 * stature) - (4.68 * age)
-      return setGeb(getGeb)
-    }
-  }
-
-  // function calMacro() {
-  /*
-  proteina =    1.8 a 2 * peso
-  gordura =     0.8 a 1 * peso
-  carboidrato = respo
-
-  1g de proteina =    4kcal
-  1g de gordura =     9kcal
-  1g de carboidrato = 4kcal
-  */
-
-  const proteinToMaintainWeight = 1.8 * weight
-  const fatToMaintainWeight = 0.8 * weight
-  const carbohydrateToMaintainWeight = (totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4
-
-  const proteinToLoseWeight = 1.8 * weight
-  const fatToLoseWeight = 0.8 * weight
-  const carbohydrateToLoseWeight = ((totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4) * 0.8
-
-  const proteinToGainMass = 2 * weight
-  const fatToGainMass = 1 * weight
-  const carbohydrateToGainMass = ((totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4) * 1.2
 
   function openModalActivities() {
     if (weight === 0) {
@@ -153,17 +103,17 @@ function App() {
       return errorAgeNotFilled()
     }
 
-    calcIMC()
-    calcGEB()
+    setUserInfo({
+      genderOption,
+      bioType,
+      weight,
+      stature,
+      age,
+    })
 
     setHasCalculated(true)
 
   }
-
-  useEffect(() => {
-    calcBodyFat()
-    // calMacro()
-  }, [imc, myActivities])
 
   return (
     <>
@@ -352,38 +302,16 @@ function App() {
                 </div>
 
                 <IMCContainer
-                  imc={imc}
-                  bodyFat={bodyFat}
+                // bodyFat={bodyFat}
                 />
 
                 <GEBContainer
                   weightObject={weightObject}
-                  geb={geb}
-                  totalKcalByActivity={totalKcalByActivity}
-                  totalKcal={totalKcal}
-                  proteinToMaintainWeight={proteinToMaintainWeight}
-                  fatToMaintainWeight={fatToMaintainWeight}
-                  carbohydrateToMaintainWeight={carbohydrateToMaintainWeight}
-                  proteinToLoseWeight={proteinToLoseWeight}
-                  fatToLoseWeight={fatToLoseWeight}
-                  carbohydrateToLoseWeight={carbohydrateToLoseWeight}
-                  proteinToGainMass={proteinToGainMass}
-                  fatToGainMass={fatToGainMass}
-                  carbohydrateToGainMass={carbohydrateToGainMass}
                   setWeightObject={setWeightObject}
                 />
 
                 <KcalSuggestionPerMeal
                   weightObject={weightObject}
-                  proteinToMaintainWeight={proteinToMaintainWeight}
-                  fatToMaintainWeight={fatToMaintainWeight}
-                  carbohydrateToMaintainWeight={carbohydrateToMaintainWeight}
-                  proteinToLoseWeight={proteinToLoseWeight}
-                  fatToLoseWeight={fatToLoseWeight}
-                  carbohydrateToLoseWeight={carbohydrateToLoseWeight}
-                  proteinToGainMass={proteinToGainMass}
-                  fatToGainMass={fatToGainMass}
-                  carbohydrateToGainMass={carbohydrateToGainMass}
                 />
 
               </motion.div>

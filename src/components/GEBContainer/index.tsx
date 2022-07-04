@@ -1,42 +1,74 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from "framer-motion"
 
 import styles from './styles.module.scss'
 import { WarningMessage } from '../WarningMessage'
+import { usePersonalData } from '../../hooks/usePersonalData'
 
 interface GEBContainerProps {
   weightObject: string
-  geb: number
-  totalKcalByActivity: number
-  totalKcal: number
-  proteinToMaintainWeight: number
-  fatToMaintainWeight: number
-  carbohydrateToMaintainWeight: number
-  proteinToLoseWeight: number
-  fatToLoseWeight: number
-  carbohydrateToLoseWeight: number
-  proteinToGainMass: number
-  fatToGainMass: number
-  carbohydrateToGainMass: number
   setWeightObject: (obj: string) => void
 }
 
 export function GEBContainer({
   weightObject,
-  geb,
-  totalKcalByActivity,
-  totalKcal,
-  proteinToMaintainWeight,
-  fatToMaintainWeight,
-  carbohydrateToMaintainWeight,
-  proteinToLoseWeight,
-  fatToLoseWeight,
-  carbohydrateToLoseWeight,
-  proteinToGainMass,
-  fatToGainMass,
-  carbohydrateToGainMass,
   setWeightObject,
 }: GEBContainerProps) {
+  const { userInfo, setGeb, geb, imc, myActivities, setTotalKcal, totalKcal, setMacro, macro } = usePersonalData()
+
+  function calcGEB() {
+    if (userInfo.genderOption === 'masculine') {
+      const getGeb = 66.47 + (13.75 * userInfo.weight) + (5 * userInfo.stature) - (6.76 * userInfo.age)
+      return setGeb(getGeb)
+    } else {
+      const getGeb = 655.1 + (9.56 * userInfo.weight) + (1.85 * userInfo.stature) - (4.68 * userInfo.age)
+      return setGeb(getGeb)
+    }
+  }
+
+  const totalKcalByActivity = myActivities.reduce((totalCaloriesSpent, actualCaloriesSpent) => totalCaloriesSpent + actualCaloriesSpent.caloriesSpent, 0)
+  const totalKcalCalc = totalKcalByActivity + geb
+
+  function calcMacro() {
+    const proteinToMaintainWeight = 1.8 * userInfo.weight
+    const fatToMaintainWeight = 0.8 * userInfo.weight
+    const carbohydrateToMaintainWeight = (totalKcal - ((proteinToMaintainWeight * 4) + (fatToMaintainWeight * 9))) / 4
+
+    const proteinToLoseWeight = 1.8 * userInfo.weight
+    const fatToLoseWeight = 0.8 * userInfo.weight
+    const carbohydrateToLoseWeight = ((totalKcal - ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9))) / 4) * 0.8
+
+    const proteinToGainMass = 2 * userInfo.weight
+    const fatToGainMass = 1 * userInfo.weight
+    const carbohydrateToGainMass = ((totalKcal - ((proteinToGainMass * 4) + (fatToGainMass * 9))) / 4) * 1.2
+
+    setMacro({
+      proteinToMaintainWeight,
+      fatToMaintainWeight,
+      carbohydrateToMaintainWeight,
+
+      proteinToLoseWeight,
+      fatToLoseWeight,
+      carbohydrateToLoseWeight,
+
+      proteinToGainMass,
+      fatToGainMass,
+      carbohydrateToGainMass,
+    })
+  }
+
+  useEffect(() => {
+    setTotalKcal(totalKcalCalc)
+    calcMacro()
+  }, [geb])
+
+  useEffect(() => {
+    calcMacro()
+  }, [totalKcal])
+
+  useEffect(() => {
+    calcGEB()
+  }, [])
 
   return (
     <div className={styles.ResultGEBContainer}>
@@ -132,10 +164,10 @@ export function GEBContainer({
               <div className={styles.microContent}>
                 <span>
                   {weightObject === 'loseWeight'
-                    ? `${Math.round(carbohydrateToLoseWeight)}g`
+                    ? `${Math.round(macro.carbohydrateToLoseWeight)}g`
                     : weightObject === 'maintainWeight'
-                      ? `${Math.round(carbohydrateToMaintainWeight)}g`
-                      : `${Math.round(carbohydrateToGainMass)}g`
+                      ? `${Math.round(macro.carbohydrateToMaintainWeight)}g`
+                      : `${Math.round(macro.carbohydrateToGainMass)}g`
                   }
                 </span>
               </div>
@@ -147,10 +179,10 @@ export function GEBContainer({
               <div className={styles.microContent}>
                 <span>
                   {weightObject === 'loseWeight'
-                    ? `${Math.round(proteinToLoseWeight)}g`
+                    ? `${Math.round(macro.proteinToLoseWeight)}g`
                     : weightObject === 'maintainWeight'
-                      ? `${Math.round(proteinToMaintainWeight)}g`
-                      : `${Math.round(proteinToGainMass)}g`
+                      ? `${Math.round(macro.proteinToMaintainWeight)}g`
+                      : `${Math.round(macro.proteinToGainMass)}g`
                   }
                 </span>
               </div>
@@ -162,10 +194,10 @@ export function GEBContainer({
               <div className={styles.microContent}>
                 <span>
                   {weightObject === 'loseWeight'
-                    ? `${Math.round(fatToLoseWeight)}g`
+                    ? `${Math.round(macro.fatToLoseWeight)}g`
                     : weightObject === 'maintainWeight'
-                      ? `${Math.round(fatToMaintainWeight)}g`
-                      : `${Math.round(fatToGainMass)}g`
+                      ? `${Math.round(macro.fatToMaintainWeight)}g`
+                      : `${Math.round(macro.fatToGainMass)}g`
                   }
                 </span>
               </div>
