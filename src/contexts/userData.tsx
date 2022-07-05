@@ -39,6 +39,7 @@ interface UserDataContextProps {
   macro: Macro
   hasCalculated: boolean
   weightObject: 'loseWeight' | 'maintainWeight' | 'gainMass' | string
+  isLoading: boolean
   setUserInfo: ({ genderOption, bioType, weight, stature, age }: UserInfo) => void
   // calcIMC: (weight: number, stature: number) => void
   setImc: (imc: number) => void
@@ -49,6 +50,7 @@ interface UserDataContextProps {
   setMacro: (macro: Macro) => void
   setHasCalculated: (calculated: boolean) => void
   setWeightObject: (value: 'loseWeight' | 'maintainWeight' | 'gainMass') => void
+  setIsLoading: (value: boolean) => void
 }
 
 interface UserDataProviderProps {
@@ -67,6 +69,7 @@ function UserDataProvider({ children }: UserDataProviderProps) {
   const [macro, setMacro] = useState<Macro>({} as Macro)
   const [hasCalculated, setHasCalculated] = useState(false)
   const [weightObject, setWeightObject] = useState('maintainWeight')
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <UserDataContext.Provider value={{
@@ -87,7 +90,9 @@ function UserDataProvider({ children }: UserDataProviderProps) {
       hasCalculated,
       setHasCalculated,
       weightObject,
-      setWeightObject
+      setWeightObject,
+      isLoading,
+      setIsLoading
     }}>
       {children}
     </UserDataContext.Provider>

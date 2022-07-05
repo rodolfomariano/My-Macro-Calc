@@ -35,7 +35,7 @@ export function PersonalInfo() {
   const activitiesCarousel = useRef<ScrollProp | any>(null)
 
   // HOOK USERINFO
-  const { setUserInfo, myActivities, setMyActivities, totalKcal, setHasCalculated } = usePersonalData()
+  const { setUserInfo, myActivities, setMyActivities, totalKcal, setHasCalculated, setIsLoading } = usePersonalData()
 
   const errorGenderNotFilled = () => toast.error("Selecione um gênero!");
   const errorBioTypeNotFilled = () => toast.error("Selecione um biotipo!");
@@ -71,6 +71,7 @@ export function PersonalInfo() {
   }
 
   async function handleCalcTheIMCAndMacro() {
+
     if (!genderOption) {
       setErrorType('gender')
       return errorGenderNotFilled()
@@ -91,6 +92,7 @@ export function PersonalInfo() {
       setErrorType('age')
       return errorAgeNotFilled()
     }
+    setIsLoading(true)
 
     setUserInfo({
       genderOption,
@@ -101,6 +103,10 @@ export function PersonalInfo() {
     })
 
     setHasCalculated(true)
+
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 3000)
 
   }
 
