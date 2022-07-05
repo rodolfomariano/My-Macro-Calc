@@ -5,16 +5,8 @@ import styles from './styles.module.scss'
 import { WarningMessage } from '../WarningMessage'
 import { usePersonalData } from '../../hooks/usePersonalData'
 
-interface GEBContainerProps {
-  weightObject: string
-  setWeightObject: (obj: string) => void
-}
-
-export function GEBContainer({
-  weightObject,
-  setWeightObject,
-}: GEBContainerProps) {
-  const { userInfo, setGeb, geb, imc, myActivities, setTotalKcal, totalKcal, setMacro, macro } = usePersonalData()
+export function GEBContainer() {
+  const { userInfo, setGeb, geb, imc, myActivities, setTotalKcal, totalKcal, setMacro, macro, weightObject, setWeightObject } = usePersonalData()
 
   function calcGEB() {
     if (userInfo.genderOption === 'masculine') {

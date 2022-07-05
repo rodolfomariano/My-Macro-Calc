@@ -37,6 +37,8 @@ interface UserDataContextProps {
   myActivities: Activity[]
   totalKcal: number
   macro: Macro
+  hasCalculated: boolean
+  weightObject: 'loseWeight' | 'maintainWeight' | 'gainMass' | string
   setUserInfo: ({ genderOption, bioType, weight, stature, age }: UserInfo) => void
   // calcIMC: (weight: number, stature: number) => void
   setImc: (imc: number) => void
@@ -45,6 +47,8 @@ interface UserDataContextProps {
   setMyActivities: ([]: Activity[]) => void
   setTotalKcal: (totalKcal: number) => void
   setMacro: (macro: Macro) => void
+  setHasCalculated: (calculated: boolean) => void
+  setWeightObject: (value: 'loseWeight' | 'maintainWeight' | 'gainMass') => void
 }
 
 interface UserDataProviderProps {
@@ -61,6 +65,8 @@ function UserDataProvider({ children }: UserDataProviderProps) {
   const [myActivities, setMyActivities] = useState<Activity[]>([])
   const [totalKcal, setTotalKcal] = useState(0)
   const [macro, setMacro] = useState<Macro>({} as Macro)
+  const [hasCalculated, setHasCalculated] = useState(false)
+  const [weightObject, setWeightObject] = useState('maintainWeight')
 
   return (
     <UserDataContext.Provider value={{
@@ -77,7 +83,11 @@ function UserDataProvider({ children }: UserDataProviderProps) {
       totalKcal,
       setTotalKcal,
       macro,
-      setMacro
+      setMacro,
+      hasCalculated,
+      setHasCalculated,
+      weightObject,
+      setWeightObject
     }}>
       {children}
     </UserDataContext.Provider>

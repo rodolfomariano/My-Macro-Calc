@@ -6,15 +6,8 @@ import { MealCard } from "../MealCard"
 import styles from './styles.module.scss'
 import { usePersonalData } from "../../hooks/usePersonalData"
 
-interface KcalSuggestionPerMealProps {
-  weightObject: string
 
-}
-
-export function KcalSuggestionPerMeal({
-  weightObject,
-
-}: KcalSuggestionPerMealProps) {
+export function KcalSuggestionPerMeal() {
   const [breakfast, setBreakfast] = useState(12)
   const [morningSnack, setMorningSnack] = useState(12)
   const [lunch, setLunch] = useState(20)
@@ -24,7 +17,7 @@ export function KcalSuggestionPerMeal({
   const [preTraining, setPreTraining] = useState(0)
   const [afterTraining, setAfterTraining] = useState(14)
 
-  const { macro } = usePersonalData()
+  const { macro, weightObject } = usePersonalData()
 
   const weightObjectToLoseWeight = (macro.proteinToLoseWeight * 4) + (macro.fatToLoseWeight * 9) + (macro.carbohydrateToLoseWeight * 4)
   const weightObjectToMaintainWeight = (macro.proteinToMaintainWeight * 4) + (macro.fatToMaintainWeight * 9) + (macro.carbohydrateToMaintainWeight * 4)

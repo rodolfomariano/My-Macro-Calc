@@ -1,0 +1,318 @@
+.personalInfo {
+  border-bottom: 1px solid rgb(141, 141, 153, 0.2);
+  padding-bottom: 2rem;
+
+  h3 {
+    color: var(--gray-500);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .personalInfoContent {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+
+
+    .genderAndBioType {
+      display: flex;
+      flex-direction: column;
+
+      .gender {
+        display: flex;
+        flex-direction: column;
+
+        strong {
+          color: var(--gray-500);
+          font-weight: 300;
+          font-size: 0.75rem;
+        }
+
+        .genderOptions {
+          width: 100%;
+          margin-bottom: 1rem;
+
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          button {
+            flex: 1;
+            padding: 0.25rem 0;
+            border-radius: 4px;
+            border: 2px solid var(--gray-200);
+            color: var(--gray-400);
+            transition: 300ms;
+
+            &:hover {
+              border: 2px solid var(--primary);
+              color: var(--primary);
+            }
+
+            &.active {
+              border: 2px solid var(--primary);
+              color: var(--primary);
+            }
+          }
+        }
+      }
+
+
+      .bioType {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        .bioTypeHeader {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+
+          margin-bottom: 0.25rem;
+
+          strong {
+            color: var(--gray-500);
+            font-weight: 300;
+            font-size: 0.75rem;
+          }
+
+          a {
+            color: var(--blue-500);
+            font-size: 10px;
+
+            &:hover {
+              color: var(--blue-600);
+            }
+          }
+        }
+
+        .bioTypesContainer {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+
+          button {
+            flex: 1;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border: 2px solid var(--gray-200);
+            color: var(--gray-400);
+            transition: 300ms;
+
+            &:hover {
+              border: 2px solid var(--primary);
+              color: var(--primary);
+            }
+
+            &.active {
+              border: 2px solid var(--primary);
+              color: var(--primary);
+            }
+          }
+        }
+      }
+    }
+
+    .personalInfoAndActivityButton {
+      flex: 1;
+
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      gap: 2rem;
+
+      .personalInfoWeightStatureAge {
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        gap: 0.75rem;
+
+        strong {
+          color: var(--gray-500);
+          font-weight: 300;
+          font-size: 1rem;
+        }
+
+        input {
+          // flex: 1;
+          width: 130px;
+          background-color: var(--gray-100);
+          border: none;
+          border-radius: 4px;
+          padding: 0.25rem 2.5rem 0.25rem 1rem;
+          margin-left: auto;
+
+          &::placeholder {
+            color: var(--gray-250);
+          }
+        }
+
+        label {
+          position: absolute;
+          right: 0;
+          display: block;
+          margin-right: 0.5rem;
+          color: var(--gray-250);
+        }
+
+        .weight,
+        .stature,
+        .age {
+          position: relative;
+
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          gap: 1.5rem;
+
+        }
+      }
+    }
+
+    .physicalActivityButton {
+      height: 100px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      strong {
+        color: var(--gray-500);
+        font-weight: 300;
+        font-size: 1rem;
+      }
+
+      button {
+        width: 72px;
+        height: 72px;
+        border-radius: 16px;
+        border: 1px solid rgb(116, 119, 189, 0.4);
+        color: var(--blue-500);
+        transition: 300ms;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+
+        &:hover {
+          background-color: var(--blue-100);
+        }
+      }
+    }
+
+    .activitiesContainer {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      max-width: 320px;
+      min-height: 100px;
+      border-radius: 16px;
+      border: 2px solid var(--gray-200);
+
+      overflow: hidden;
+
+      display: flex;
+      align-items: center;
+
+      &>button {
+        position: absolute;
+        z-index: 500;
+        width: 30px;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .3);
+        color: var(--gray-50);
+        backdrop-filter: blur(1.5px);
+        transition: 300ms;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, .5);
+        }
+      }
+
+      .activitiesContent {
+        padding: 0.5rem 2.5rem;
+
+        overflow: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        &::-webkit-scrollbar {
+          height: 10px;
+          border-radius: 5px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: var(--green-200);
+          border-radius: 0 0 7px 7px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: var(--green-400);
+          border-radius: 3px;
+        }
+
+      }
+
+      .seePreviousActivity {
+        top: 0;
+        left: 0;
+        box-shadow: 4px 0 8px rgba(0, 0, 0, .3);
+
+        &:hover {
+          box-shadow: 4px 0 8px rgba(0, 0, 0, .5);
+        }
+      }
+
+      .seeNextActivity {
+        top: 0;
+        right: 0;
+        box-shadow: -4px 0 8px rgba(0, 0, 0, .3);
+
+        &:hover {
+          box-shadow: -4px 0 8px rgba(0, 0, 0, .5);
+        }
+      }
+
+    }
+
+    .calculateButton {
+      min-width: 100px;
+      height: 100px;
+      background-color: var(--green-200);
+      border-radius: 16px;
+      color: var(--gray-500);
+      transition: 300ms;
+
+      &:hover {
+        background-color: var(--green-300);
+        color: var(--gray-100);
+      }
+    }
+
+    @media (max-width: 1080px) {
+      flex-direction: column;
+
+      .calculateButton {
+        width: 100%;
+        height: 40px;
+        border-radius: 8px;
+        max-width: 420px;
+      }
+    }
+  }
+
+
+}
