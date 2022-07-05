@@ -32,7 +32,7 @@ export function GEBContainer() {
 
     const proteinToGainMass = 2 * userInfo.weight
     const fatToGainMass = 1 * userInfo.weight
-    const carbohydrateToGainMass = ((totalKcal - ((proteinToGainMass * 4) + (fatToGainMass * 9))) / 4) * 1.2
+    const carbohydrateToGainMass = ((totalKcal - ((proteinToGainMass * 4) + (fatToGainMass * 9))) / 4) * 1.4
 
     setMacro({
       proteinToMaintainWeight,
