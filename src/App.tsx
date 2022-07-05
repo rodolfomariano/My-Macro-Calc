@@ -16,6 +16,7 @@ import { GEBContainer } from "./components/GEBContainer";
 import { PersonalInfo } from "./components/PersonalInfo";
 
 
+
 function App() {
 
   const { hasCalculated, isLoading } = usePersonalData()

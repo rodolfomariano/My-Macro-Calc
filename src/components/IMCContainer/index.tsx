@@ -10,7 +10,8 @@ interface IMCContainerProps {
 }
 
 export function IMCContainer() {
-  const { userInfo, setImc, imc, setBodyFat, bodyFat } = usePersonalData()
+  const { userInfo, setImc, imc, setBodyFat, bodyFat, myRef } = usePersonalData()
+
 
   function calcIMC() {
     const calcImc = userInfo.weight / (userInfo.stature * userInfo.stature)
@@ -30,8 +31,13 @@ export function IMCContainer() {
     calcBodyFat()
   }, [imc])
 
+  useEffect(() => {
+    window.scrollTo({ behavior: 'smooth', top: myRef.current.offsetTop })
+
+  }, [])
+
   return (
-    <div className={styles.ResultIMCContent}>
+    <div className={styles.ResultIMCContent} ref={myRef}>
 
       <div className={styles.IMCContainer}>
 

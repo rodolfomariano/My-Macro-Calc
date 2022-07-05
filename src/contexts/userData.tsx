@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useRef, useState } from "react";
 
 interface UserInfo {
   genderOption: string
@@ -40,6 +40,7 @@ interface UserDataContextProps {
   hasCalculated: boolean
   weightObject: 'loseWeight' | 'maintainWeight' | 'gainMass' | string
   isLoading: boolean
+  myRef: any
   setUserInfo: ({ genderOption, bioType, weight, stature, age }: UserInfo) => void
   // calcIMC: (weight: number, stature: number) => void
   setImc: (imc: number) => void
@@ -71,6 +72,8 @@ function UserDataProvider({ children }: UserDataProviderProps) {
   const [weightObject, setWeightObject] = useState('maintainWeight')
   const [isLoading, setIsLoading] = useState(false)
 
+  let myRef = useRef()
+
   return (
     <UserDataContext.Provider value={{
       userInfo,
@@ -92,7 +95,8 @@ function UserDataProvider({ children }: UserDataProviderProps) {
       weightObject,
       setWeightObject,
       isLoading,
-      setIsLoading
+      setIsLoading,
+      myRef
     }}>
       {children}
     </UserDataContext.Provider>
