@@ -18,12 +18,7 @@ import { PersonalInfo } from "./components/PersonalInfo";
 
 
 function App() {
-
-  // const [weightObject, setWeightObject] = useState('maintainWeight')
-
-
-  // // HOOK USERINFO
-  const { setUserInfo, myActivities, setMyActivities, totalKcal, hasCalculated } = usePersonalData()
+  const { hasCalculated } = usePersonalData()
 
   return (
     <>
