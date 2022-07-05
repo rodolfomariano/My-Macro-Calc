@@ -28,11 +28,11 @@ export function GEBContainer() {
 
     const proteinToLoseWeight = 1.8 * userInfo.weight
     const fatToLoseWeight = 0.8 * userInfo.weight
-    const carbohydrateToLoseWeight = ((totalKcal - ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9))) / 4) * 0.8
+    const carbohydrateToLoseWeight = ((totalKcal - ((proteinToLoseWeight * 4) + (fatToLoseWeight * 9))) / 4) * (userInfo.bioType === 'endomorfo' ? 0.6 : 0.8)
 
     const proteinToGainMass = 2 * userInfo.weight
     const fatToGainMass = 1 * userInfo.weight
-    const carbohydrateToGainMass = ((totalKcal - ((proteinToGainMass * 4) + (fatToGainMass * 9))) / 4) * 1.4
+    const carbohydrateToGainMass = ((totalKcal - ((proteinToGainMass * 4) + (fatToGainMass * 9))) / 4) * (userInfo.bioType === 'ectomorfo' ? 1.6 : 1.4)
 
     setMacro({
       proteinToMaintainWeight,
