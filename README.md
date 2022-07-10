@@ -1,7 +1,7 @@
 # My-Macro-Calc
 
 <p align="center">
-  <img width="90%" src="https://firebasestorage.googleapis.com/v0/b/imagens-3dce0.appspot.com/o/myCalc.png?alt=media&token=831bb7db-029b-4589-a598-315e23aa6009">
+  <img width="90%" src="https://firebasestorage.googleapis.com/v0/b/imagens-3dce0.appspot.com/o/My-macro.png?alt=media&token=b25de0c6-42be-4f61-bc88-a1c8e6fd9db0">
 </p>
 
 ## :satellite: Technologies
