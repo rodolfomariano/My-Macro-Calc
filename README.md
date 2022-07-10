@@ -29,4 +29,11 @@ npm install
 # or
 yarn
 ```
+
+Secund, run using expo
+
+```bash
+yarn dev
+```
+
 ## The project is run on port 3000
