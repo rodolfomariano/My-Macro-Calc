@@ -85,7 +85,8 @@
     }
 
     img {
-      height: 200px;
+      max-width: 420px;
+      max-height: 200px;
     }
   }
 
@@ -97,6 +98,5 @@
 
   @media (max-width: 1080px) {
     margin: 2rem;
-
   }
 }
