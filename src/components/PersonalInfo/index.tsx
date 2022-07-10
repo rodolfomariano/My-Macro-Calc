@@ -7,6 +7,7 @@ import { ActivityCard } from '../ActivityCard'
 import { ModalActivities } from '../ModalActivities'
 import { toast } from 'react-toastify'
 import { usePersonalData } from '../../hooks/usePersonalData'
+import { useNavigate } from 'react-router-dom'
 
 interface Activity {
   id: number
@@ -29,6 +30,7 @@ export function PersonalInfo() {
 
   const [errorType, setErrorType] = useState('')
 
+  const navigation = useNavigate()
 
   // const [hasCalculated, setHasCalculated] = useState(false)
 
@@ -138,7 +140,11 @@ export function PersonalInfo() {
           <div className={`${styles.bioType} ${errorType === 'bioType' && bioType.length === 0 && styles.warning}`}>
             <div className={styles.bioTypeHeader}>
               <strong>Biotipo:</strong>
-              <a href="#">Qual o meu biotipo?</a>
+              <button
+                onClick={() => navigation('bio-type')}
+              >
+                Qual o meu biotipo?
+              </button>
             </div>
 
             <div className={styles.bioTypesContainer}>
