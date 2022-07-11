@@ -14,12 +14,14 @@ import { KcalSuggestionPerMeal } from "./components/KcalSuggestionPerMeal";
 import { IMCContainer } from "./components/IMCContainer";
 import { GEBContainer } from "./components/GEBContainer";
 import { PersonalInfo } from "./components/PersonalInfo";
+import { useNavigate } from 'react-router-dom';
 
 
 
 function App() {
-
   const { hasCalculated, isLoading } = usePersonalData()
+
+  const navigation = useNavigate()
 
   return (
     <>
@@ -56,7 +58,11 @@ function App() {
 
                   <div className={styles.resultHeader}>
                     <h3>Resultado:</h3>
-                    <a href="#">Saiba como foi feito os calculos!</a>
+                    <button
+                      onClick={() => navigation('calc')}
+                    >
+                      Saiba como foi feito os calculos!
+                    </button>
                   </div>
 
                   <IMCContainer />

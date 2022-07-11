@@ -1,0 +1,38 @@
+.mainContainer {
+  flex: 1;
+  margin: 2rem auto;
+  max-width: 1100px;
+  box-shadow: 0 0 4px var(--gray-400);
+  border-radius: 16px;
+  padding: 1.5rem;
+
+  .goToBack {
+    font-size: 1rem;
+    color: var(--gray-400);
+    transition: 300ms;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover {
+      color: var(--gray-600);
+    }
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .calcContainer {
+    padding: 1rem 0;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 1080px) {
+    margin: 2rem;
+  }
+}
