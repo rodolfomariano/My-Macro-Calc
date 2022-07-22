@@ -49,7 +49,7 @@ export function KcalSuggestionPerMeal() {
               })} kcal</strong>
         </span>
 
-        <a href="#">Dica</a>
+        {/* <a href="#">Dica</a> */}
       </div>
 
       <div className={styles.mealContainer}>
