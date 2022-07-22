@@ -28,9 +28,9 @@ export function ActivityCard({ title, time, caloriesSpent, id, removeItem }: Act
       <button className={styles.removeActivity} onClick={() => removeItem(id)}>
         <TrashSimple size={16} />
       </button>
-      <button className={styles.editActivity}>
+      {/* <button className={styles.editActivity}>
         <Pencil size={16} />
-      </button>
+      </button> */}
     </div>
   )
 }

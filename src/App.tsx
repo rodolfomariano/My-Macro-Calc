@@ -61,7 +61,7 @@ function App() {
                     <button
                       onClick={() => navigation('calc')}
                     >
-                      Saiba como foi feito os calculos!
+                      Saiba como foram feitos os calculos!
                     </button>
                   </div>
 
