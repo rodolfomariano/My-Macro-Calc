@@ -149,7 +149,7 @@ export function GEBContainer() {
         </div>
 
         <div className={styles.microsToConsumeContainer}>
-          <strong>Micronutrientes diários</strong>
+          <strong>Macronutrientes diários</strong>
 
           <div className={styles.microContainer}>
             <div className={styles.microTypeContainer}>
